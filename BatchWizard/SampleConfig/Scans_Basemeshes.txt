@@ -1,0 +1,7 @@
+FaceScan_Ten24.obj		      HeadPolygroups_MakeHuman.obj
+TorsoScan.obj			          TorsoTemplate_NickZ.obj
+
+# this is comment all lines below too
+# AlexFear_3DHumanity.obj		  HeadPolygroups_MakeHuman.obj
+# AlexNeutral_3DHumanity.obj	HeadPolygroups_MakeHuman.obj
+# AlexPain_3DHumanity.obj		  HeadPolygroups_MakeHuman.obj
