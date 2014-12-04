@@ -11,8 +11,9 @@ print "Config file is %s" %  configFile
 
 tasks = ParseConfig.parseConfig(configFile)
 
-for task in tasks:
-
+tasksCount = len(tasks)
+for taskNum, task in enumerate(tasks):
+    print "Task %d of %d" % (taskNum + 1, tasksCount)
     print "Loading scan %s..." % task['scanFileName']
     scan = wrap.Geom(task['scanFileName'])
     scan.wireframe = False
@@ -69,4 +70,4 @@ for task in tasks:
 
     print
     
-print "Wrapping done, plese use LineUp.py to see all results"
+print "Wrapping done, please use LineUp.py to see all results"
