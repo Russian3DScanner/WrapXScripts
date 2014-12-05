@@ -33,31 +33,57 @@ for taskNum, task in enumerate(tasks):
     print "Rigid alignment..."
     basemeshAlignPoints = wrap.loadPoints(task['basemeshAlignPointsFileName'])
     scanAlignPoints = wrap.loadPoints(task['scanAlignPointsFileName'])
-    transformMatrix = wrap.rigidAlignment(basemesh, basemeshAlignPoints, scan, scanAlignPoints)
+    transformMatrix = wrap.rigidAlignment(basemesh, basemeshAlignPoints, scan, scanAlignPoints, **task['methodsArgs']['rigidAlignment'])
     basemesh.transform(transformMatrix)
     wrap.fitToView()
-    print "OK"
+    print "OK"    
 
     print "Non-rigid registration..."
     basemeshWrapPoints = wrap.loadPoints(task['basemeshWrapPointsFileName'])
     scanWrapPoints = wrap.loadPoints(task['scanWrapPointsFileName'])
-    wrapped = wrap.nonRigidRegistration(basemesh,scan,basemeshWrapPoints,scanWrapPoints)
+    
+    minScanSize = min(scan.boundingBoxSize)    
+    minBaseSize = min(basemesh.boundingBoxSize)    
+        
+    if minBaseSize < 1.0 and minBaseSize < minScanSize:
+        scaleDegree = 10.0/minBaseSize
+    elif minScanSize < 1.0:
+        scaleDegree = 10.0/minScanSize
+    else:
+        scaleDegree = 1.0
+
+    if scaleDegree > 1.0:
+        print "Small mesh, increase scale to avoid round errors. Scale: %f" % scaleDegree
+        scan.scale(scaleDegree)
+        basemesh.scale(scaleDegree)
+        
+    
+    wrapped = wrap.nonRigidRegistration(basemesh,scan,basemeshWrapPoints,scanWrapPoints, **task['methodsArgs']['nonRigidRegistration'])
     basemesh.hide()
     print "OK"
     
     # Comment next three lines if you want to save basemesh topology unchanged
-    print "Subdivision..."
-    wrapped = wrap.subdivide(wrapped)
-    print "OK"
+    if 'subdivide' not in task['useMethods'] or task['useMethods']['subdivide']:
+        print "Subdivision..."
+        wrapped = wrap.subdivide(wrapped, **task['methodsArgs']['subdivide'])
+        print "OK"
+    else:
+        print 'Skip subdivide'
     
-    print "Extracting details..."
-    wrapped = wrap.projectMesh(wrapped, scan)
-    print "OK"
+    if 'projectMesh' not in task['useMethods'] or task['useMethods']['projectMesh']:
+        print "Extracting details..."
+        wrapped = wrap.projectMesh(wrapped, scan, **task['methodsArgs']['projectMesh'])
+        print "OK"
+    else:
+        print 'Skip projectMesh'
 
     print "Saving results..."
     if not os.path.exists(os.path.dirname(task['resultFileName'])):
         try: os.mkdir(os.path.dirname(task['resultFileName'])) 
         except: pass
+        
+    if scaleDegree > 1.0:
+        wrapped.scale(1.0/scaleDegree)
         
     wrapped.save(task['resultFileName'])
     print "Wrapped result saved to %s" % task['resultFileName']

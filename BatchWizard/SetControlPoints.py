@@ -49,7 +49,7 @@ for taskNum, task in enumerate(tasks):
     wrap.savePoints(scanAlignPoints,task['scanAlignPointsFileName'])
     print "Rigid alignment point correspondences saved"
 
-    transformMatrix = wrap.rigidAlignment(basemesh, basemeshAlignPoints, scan, scanAlignPoints)
+    transformMatrix = wrap.rigidAlignment(basemesh, basemeshAlignPoints, scan, scanAlignPoints, **task['methodsArgs']['rigidAlignment'])
     basemesh.transform(transformMatrix)
     wrap.fitToView()
 

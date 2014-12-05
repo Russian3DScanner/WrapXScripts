@@ -1,0 +1,6 @@
+#Example of arguments config
+
+projectMesh= False
+
+rigidAlignment.matchScale = True
+nonRigidRegistration.maxIterations = 20

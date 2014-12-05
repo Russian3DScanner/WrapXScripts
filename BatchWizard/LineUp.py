@@ -41,7 +41,7 @@ for taskNum, task in enumerate(tasks):
     print "Rigid alignment basemesh to scan..."
     basemeshAlignPoints = wrap.loadPoints(task['basemeshAlignPointsFileName'])
     scanAlignPoints = wrap.loadPoints(task['scanAlignPointsFileName'])
-    transformMatrix = wrap.rigidAlignment(basemesh, basemeshAlignPoints, scan, scanAlignPoints)
+    transformMatrix = wrap.rigidAlignment(basemesh, basemeshAlignPoints, scan, scanAlignPoints, **task['methodsArgs']['rigidAlignment'])
     basemesh.transform(transformMatrix)
     
     scaleFactor = 10.0 / scan.boundingBoxSize[0]

@@ -47,6 +47,12 @@ def parseConfig(configFileName):
                 task['resultTextureFileName'] = resultTextureFileName
                 break
 
+        # search config for optional args
+        argsFileName = os.path.join(directory,'Scans+Textures',os.path.splitext(scanRelativeFileName)[0] + '_args.txt')
+        if os.path.exists(argsFileName):
+            task['useMethods'], task['methodsArgs'] = parseMethodsArgumentsConfig(argsFileName, getOptionalMethodsDescForParse())
+        else:
+            task['useMethods'], task['methodsArgs'] = collections.defaultdict(lambda: {}), collections.defaultdict(lambda: {})
         # filenames of contol points                            
         task['scanAlignPointsFileName'] = scanFileName + "_alignPoints.txt"
         task['basemeshAlignPointsFileName'] = basemeshFileName + "_alignPoints.txt"
@@ -84,7 +90,7 @@ def getOptionalMethodsDescForParse():
             "multiplierControlPoints": float,
             "maxIterations": int,
             "mu": float,
-            "subdivisionPercentage", float
+            "subdivisionPercentage": float
         },
         "subdivide": {
             "nSubdivisions": int
@@ -99,7 +105,7 @@ def getOptionalMethodsDescForParse():
     }
     
 def parseMethodsArgumentsConfig(fileName, methodsDescription):
-    useMethod = {}
+    useMethods = {}
     methodsArgs = collections.defaultdict(lambda: {})
     with open(fileName) as configFile:
         for line in configFile:
@@ -111,10 +117,12 @@ def parseMethodsArgumentsConfig(fileName, methodsDescription):
             parsedArgName = argumentName.split('.')
             methodName = parsedArgName[0]
             if len(parsedArgName) == 1:
-                useMethod[methodName] = parseBool(argumentValue)
+                useMethods[methodName] = parseBool(argumentValue)
             else:
-                arg = parsedArgName[1]                    
+                arg = parsedArgName[1]        
+                if arg not in methodsDescription[methodName]:
+                    raise Exception("Bad arg name %s " % arg)
                 methodsArgs[methodName][arg] = methodsDescription[methodName][arg](argumentValue)
                                    
-    return useMethod, methodsArgs    
+    return useMethods, methodsArgs    
     
