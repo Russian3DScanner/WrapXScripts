@@ -1,12 +1,13 @@
 import unittest
 import os, sys
 sys.path.append(os.getcwd())
+sys.path.append(os.path.join(os.getcwd(), '..'))
 
-from parseMethodsArguments import parseArgumentsConfig, parseBool, parseString
+from ParseConfig import parseMethodsArgumentsConfig, parseBool, parseString
 
 class TestMethodArguments(unittest.TestCase):
 
-    def test_01_parse(self):
+    def test_01_parse(self):
         testFileName = 'testConfigFile1.txt'
         methodsDescriptions = {
             "nonRigidAligment": {
@@ -21,7 +22,7 @@ class TestMethodArguments(unittest.TestCase):
                 "yetAnotherUsefullParametrBool02": parseBool
             }
         }
-        usages, args = parseArgumentsConfig(testFileName, methodsDescriptions)
+        usages, args = parseMethodsArgumentsConfig(testFileName, methodsDescriptions)
         
         self.assertEquals(len(usages), 1)
         self.assertEquals(usages["rigidAligment"], False)
@@ -39,11 +40,11 @@ class TestMethodArguments(unittest.TestCase):
 
     def test_02_parse_exeptions(self):
         testFileName = 'testConfigFile1Bad.txt'
-        self.assertRaises(Exception, parseArgumentsConfig, testFileName, {})
+        self.assertRaises(Exception, parseMethodsArgumentsConfig, testFileName, {})
         testFileName = 'testConfigFile2Bad.txt'
-        self.assertRaises(Exception, parseArgumentsConfig, testFileName, {})
+        self.assertRaises(Exception, parseMethodsArgumentsConfig, testFileName, {})
         testFileName = 'testConfigFile3Bad.txt'
-        self.assertRaises(Exception, parseArgumentsConfig, testFileName, {
+        self.assertRaises(Exception, parseMethodsArgumentsConfig, testFileName, {
             "yetAnotherMethod":{
                 'goodArg': parseBool,
                 'badArg': int
