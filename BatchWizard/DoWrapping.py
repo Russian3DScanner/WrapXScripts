@@ -4,7 +4,6 @@ import sys,os
 sys.path.append(os.getcwd())
 import ParseConfig; reload(ParseConfig)
 
-
 print "Select config file"
 configFile = wrap.openFileDialog("Select config file",filter="Text Files (*.txt)")
 print "Config file is %s" %  configFile
@@ -50,13 +49,13 @@ for taskNum, task in enumerate(tasks):
     elif minScanSize < 1.0:
         scaleDegree = 10.0/minScanSize
     else:
-        scaleDegree = 1.0
+        scaleDegree = 1.0    
 
     if scaleDegree > 1.0:
         print "Small mesh, increase scale to avoid round errors. Scale: %f" % scaleDegree
         scan.scale(scaleDegree)
         basemesh.scale(scaleDegree)
-        
+    scan.fitToView()
     
     wrapped = wrap.nonRigidRegistration(basemesh,scan,basemeshWrapPoints,scanWrapPoints, **task['methodsArgs']['nonRigidRegistration'])
     basemesh.hide()
@@ -84,12 +83,13 @@ for taskNum, task in enumerate(tasks):
         
     if scaleDegree > 1.0:
         wrapped.scale(1.0/scaleDegree)
+        scan.scale(1.0/scaleDegree)
         
     wrapped.save(task['resultFileName'])
     print "Wrapped result saved to %s" % task['resultFileName']
     
     if scan.texture:
-        wrapped.texture = wrap.transferTexture(scan, scan.texture, wrapped)
+        wrapped.texture = wrap.transferTexture(scan, scan.texture, wrapped)        
         wrapped.texture.extrapolate()        
         wrapped.texture.save(task['resultTextureFileName'])
         print "Wrapped result texture saved to %s" % task['resultTextureFileName']
