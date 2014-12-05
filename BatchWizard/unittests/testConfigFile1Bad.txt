@@ -1,0 +1,1 @@
+myBestMethod.myAwesomeArgument = 'My really cool string'

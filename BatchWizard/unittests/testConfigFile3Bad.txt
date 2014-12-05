@@ -1,0 +1,4 @@
+
+yetAnotherMethod = False
+yetAnotherMethod.goodArg = False
+yetAnotherMethod.badArg= 'qwerty'

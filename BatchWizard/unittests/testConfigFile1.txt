@@ -1,0 +1,16 @@
+
+#Just test file
+rigidAligment = False
+
+nonRigidAligment.someUsefullArgument      = 'My own argument!'
+nonRigidAligment.someUsefullArgumentInt   = 42
+
+nonRigidAligment.someUsefullArgumentFloat = 3.14
+
+rigidAligment.yetAnotherUsefullParametr = -1
+rigidAligment.yetAnotherUsefullParametrBool01 = True
+rigidAligment.yetAnotherUsefullParametrBool02 = False
+
+           #Comment with bad ident
+           
+
