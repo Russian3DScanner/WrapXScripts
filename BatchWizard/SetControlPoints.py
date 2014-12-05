@@ -69,5 +69,5 @@ for taskNum, task in enumerate(tasks):
     # save
     wrap.savePoints(basemeshWrapPoints,task['basemeshWrapPointsFileName'])
     wrap.savePoints(scanWrapPoints,task['scanWrapPointsFileName'])
-    print "Wrapping point correspondences saved, please run DoWrapping.py"
+    print "Wrapping point correspondences saved, please run DoWrapping.py. For watch aligned scanes run LineUp.py"
     print

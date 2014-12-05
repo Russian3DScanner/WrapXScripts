@@ -52,7 +52,7 @@ for taskNum, task in enumerate(tasks):
         scaleDegree = 1.0    
 
     if scaleDegree > 1.0:
-        print "Small mesh, increase scale to avoid round errors. Scale: %f" % scaleDegree
+        print "Scan or base mesh are too small, temporary increase scale to avoid round errors. Scale: %f" % scaleDegree
         scan.scale(scaleDegree)
         basemesh.scale(scaleDegree)
     scan.fitToView()
@@ -84,7 +84,9 @@ for taskNum, task in enumerate(tasks):
     if scaleDegree > 1.0:
         wrapped.scale(1.0/scaleDegree)
         scan.scale(1.0/scaleDegree)
-        
+    
+    wrapped.fitToView()
+    
     wrapped.save(task['resultFileName'])
     print "Wrapped result saved to %s" % task['resultFileName']
     

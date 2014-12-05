@@ -14,7 +14,7 @@ def parseConfig(configFileName):
         if not line:
             continue
 
-	if line.startswith('#'):
+        if line.startswith('#'):
             continue
 
         (scanRelativeFileName, basemeshRelativeFileName) = line.split()
@@ -28,7 +28,7 @@ def parseConfig(configFileName):
             continue
 
         if not os.path.exists(scanFileName):
-            print "No such file: %s, ignoring" % basemehsFileName
+            print "No such file: %s, ignoring" % basemesFileName
             continue
         task = {
             'scanFileName': scanFileName,
@@ -107,9 +107,11 @@ def getOptionalMethodsDescForParse():
 def parseMethodsArgumentsConfig(fileName, methodsDescription):
     useMethods = {}
     methodsArgs = collections.defaultdict(lambda: {})
+    
     with open(fileName) as configFile:
         for line in configFile:
             strippedLine = line.strip()
+            
             if len(strippedLine) == 0 or strippedLine[0] == '#':#empty lines and comments are skipped
                 continue
                         
