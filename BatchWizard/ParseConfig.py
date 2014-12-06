@@ -51,10 +51,10 @@ def parseConfig(configFileName):
         }
 
         # search textures
-        textureExtensions = [".jpg",".png"]
+        textureExtensions = [".jpg",".JPG",".png",".PNG"]
         for extension in textureExtensions:
-            textureFileName = os.path.join(scansDirectory,os.path.splitext(scanFileName)[0]+extension)
-            resultTextureFileName = os.path.join(resultsDirectory,os.path.splitext(scanFileName)[0]+extension)
+            textureFileName = os.path.join(os.path.splitext(scanFileName)[0]+extension)
+            resultTextureFileName = os.path.join(resultsDirectory,os.path.splitext(scanShortName)[0]+extension)
 
             if os.path.exists(textureFileName):
                 task['textureFileName'] = textureFileName
@@ -63,6 +63,7 @@ def parseConfig(configFileName):
 
         # search config for optional args
         argsFileName = os.path.join(scansDirectory,os.path.splitext(scanShortName)[0] + '_args.txt')
+        task['argsFileName'] = argsFileName
         if os.path.exists(argsFileName):
             task['useMethods'], task['methodsArgs'] = parseMethodsArgumentsConfig(argsFileName, getOptionalMethodsDescForParse())
         else:
@@ -76,7 +77,8 @@ def parseConfig(configFileName):
         task['basemeshWrapPointsFileName'] = os.path.join(basemeshesDirectory, basemeshShortName + "_wrapPoints.txt")
 
         tasks.append(task)
-        print task
+        #import pprint
+        #pprint.pprint(task)
 
     return tasks
 

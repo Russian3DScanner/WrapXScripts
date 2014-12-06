@@ -12,6 +12,7 @@ tasks = ParseConfig.parseConfig(configFile)
 
 tasksCount = len(tasks)
 for taskNum, task in enumerate(tasks):
+    
     print "Task %d of %d" % (taskNum + 1, tasksCount)
     print "Loading scan %s..." % task['scanFileName']
     scan = wrap.Geom(task['scanFileName'])
@@ -52,7 +53,7 @@ for taskNum, task in enumerate(tasks):
         scaleDegree = 1.0    
 
     if scaleDegree > 1.0:
-        print "Scan or base mesh are too small, temporary increase scale to avoid round errors. Scale: %f" % scaleDegree
+        print "Scan or base mesh are too small, temporarily increase scale to avoid rounding errors. Scale: %f" % scaleDegree
         scan.scale(scaleDegree)
         basemesh.scale(scaleDegree)
     scan.fitToView()
@@ -61,31 +62,32 @@ for taskNum, task in enumerate(tasks):
     basemesh.hide()
     print "OK"
     
-    # Comment next three lines if you want to save basemesh topology unchanged
     if 'subdivide' not in task['useMethods'] or task['useMethods']['subdivide']:
         print "Subdivision..."
         wrapped = wrap.subdivide(wrapped, **task['methodsArgs']['subdivide'])
         print "OK"
     else:
-        print 'Skip subdivide'
+        print 'Skipping subdivide'
     
     if 'projectMesh' not in task['useMethods'] or task['useMethods']['projectMesh']:
         print "Extracting details..."
         wrapped = wrap.projectMesh(wrapped, scan, **task['methodsArgs']['projectMesh'])
         print "OK"
     else:
-        print 'Skip projectMesh'
+        print 'Skipping projectMesh'
 
-    print "Saving results..."
-    if not os.path.exists(os.path.dirname(task['resultFileName'])):
-        try: os.mkdir(os.path.dirname(task['resultFileName'])) 
-        except: pass
-        
+    
     if scaleDegree > 1.0:
+        print "Restoring original scan scale"
         wrapped.scale(1.0/scaleDegree)
         scan.scale(1.0/scaleDegree)
     
     wrapped.fitToView()
+    
+    print "Saving results..."
+    if not os.path.exists(os.path.dirname(task['resultFileName'])):
+        try: os.mkdir(os.path.dirname(task['resultFileName'])) 
+        except: pass
     
     wrapped.save(task['resultFileName'])
     print "Wrapped result saved to %s" % task['resultFileName']
@@ -95,7 +97,12 @@ for taskNum, task in enumerate(tasks):
         wrapped.texture.extrapolate()        
         wrapped.texture.save(task['resultTextureFileName'])
         print "Wrapped result texture saved to %s" % task['resultTextureFileName']
-
+    else:
+        print "Skipping texture transfer"
+            
+        
     print
     
+print    
 print "Wrapping done, please use LineUp.py to see all results"
+print

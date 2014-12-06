@@ -1,0 +1,59 @@
+#Example of parameters config
+# '#' denotes comment line, if line starts with # line will be ignored 
+
+#Every scan may have its own parameters config. Config should have name of the form MyScanName_args.txt
+#If your scan has name 'Scan01.obj' then config file should have name 'Scan01_args.txt'
+#If scan hasn't config then parameters will be set to default
+
+#To set some parameter you should use the following syntax:
+#methodName.parameterName = someValue
+
+#Detailed information here
+#http://www.russian3dscanner.com/docs/WrapX/wrapFunctions.html
+
+
+#All possible stages or parameters
+#To set custom value just uncomment line and set your value
+#All lines below set default parameters values
+
+
+
+#rigidAlignment.matchScale = True
+
+
+#nonRigidRegistration.initialRadiusMultiplier = 1.0
+#nonRigidRegistration.radiusMultiplier = 4.0
+#nonRigidRegistration.minNodes = 10
+#nonRigidRegistration.smoothnessInitial = 1.0
+#nonRigidRegistration.smoothnessFinal = 0.1
+#nonRigidRegistration.multiplierControlPoints = 10.0
+#nonRigidRegistration.maxIterations = 30
+#nonRigidRegistration.mu = 1e-12
+#nonRigidRegistration.subdivisionPercentage = 1.0
+
+
+
+#You can disable or enable some stages: projectMesh, subdivide, textureTransfer 
+#stageName = False # True - for enable False to disable
+
+
+#Disable or enable subdivide stage in DoWrapping.py
+#subdivide = True
+#subdivide.nSubdivisions = 1
+
+
+
+#Disable or enable projectMesh stage in DoWrapping.py
+#projectMesh = True
+#projectMesh.maxRelativeDist = 1.0
+#projectMesh.checkNormalsCompatibility = True
+
+
+
+#Disable or enable transferTexture stage in DoWrapping.py
+#transferTexture = True
+#transferTexture.maxRelativeDist = 3.0
+
+
+
+
