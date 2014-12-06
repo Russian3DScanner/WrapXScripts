@@ -90,7 +90,7 @@ for taskNum, task in enumerate(tasks):
     wrapped.save(task['resultFileName'])
     print "Wrapped result saved to %s" % task['resultFileName']
     
-    if scan.texture:
+    if scan.texture and ('transferTexture' not in task['useMethods'] or task['useMethods']['transferTexture']):
         wrapped.texture = wrap.transferTexture(scan, scan.texture, wrapped)        
         wrapped.texture.extrapolate()        
         wrapped.texture.save(task['resultTextureFileName'])
