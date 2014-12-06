@@ -6,9 +6,9 @@ import shutil
 outputDirectory = "ManyScansOneBasemesh"
 
 # Change to True of False to enable or disable some stages
-subdivide = False
+subdivide = True
 projectMesh = True
-transferTexture = False
+transferTexture = True
 
 # Do not touch lines below
 scansDirectory = os.path.join(outputDirectory,"Scans+Textures")
@@ -52,10 +52,10 @@ sys.path.append(os.getcwd())
 import ParseConfig; reload(ParseConfig)
 tasks = ParseConfig.parseConfig(configFileName)
 
-argsTemplate = open("argsTemplate.txt").read()
-argsTemplate = argsTemplate.replace("#subdivide = True", "subdivide = %s" % subdivide)
-argsTemplate = argsTemplate.replace("#projectMesh = True", "projectMesh = %s" % projectMesh)
-argsTemplate = argsTemplate.replace("#transferTexture = True", "transferTexture = %s" % transferTexture)
+argsTemplate = open("argsTemplate.txt","rb").read()
+argsTemplate = argsTemplate.replace("# subdivide = True", "subdivide = %s" % subdivide)
+argsTemplate = argsTemplate.replace("# projectMesh = True", "projectMesh = %s" % projectMesh)
+argsTemplate = argsTemplate.replace("# transferTexture = True", "transferTexture = %s" % transferTexture)
 for task in tasks:
     with open(task['argsFileName'],"wb") as file:
         file.write(argsTemplate)

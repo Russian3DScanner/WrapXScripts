@@ -53,7 +53,7 @@ for taskNum, task in enumerate(tasks):
         scaleDegree = 1.0    
 
     if scaleDegree > 1.0:
-        print "Scan or base mesh are too small, temporarily increase scale to avoid rounding errors. Scale: %f" % scaleDegree
+        print "Scan is too small, temporarily increase scale to avoid rounding errors. Scale: %f" % scaleDegree
         scan.scale(scaleDegree)
         basemesh.scale(scaleDegree)
     scan.fitToView()
