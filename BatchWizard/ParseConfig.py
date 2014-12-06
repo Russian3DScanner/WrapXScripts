@@ -4,6 +4,10 @@ import collections
 def parseConfig(configFileName):
 
     directory = os.path.dirname(configFileName)
+    scansDirectory = os.path.join(directory,"Scans+Textures")
+    basemeshesDirectory = os.path.join(directory,"Basemeshes")
+    resultsDirectory = os.path.join(directory,"Results")
+
 
     tasks = []
     lines = open(configFileName).readlines()
@@ -17,11 +21,17 @@ def parseConfig(configFileName):
         if line.startswith('#'):
             continue
 
-        (scanRelativeFileName, basemeshRelativeFileName) = line.split()
+        (scanFileName, basemeshFileName) = line.split()
+        scanShortName = os.path.split(scanFileName)[1]
+        basemeshShortName = os.path.split(basemeshFileName)[1]
+        
+        if not os.path.isabs(scanFileName):
+            scanFileName = os.path.join(scansDirectory,scanShortName)
 
-        scanFileName = os.path.join(directory,'Scans+Textures',scanRelativeFileName)
-        basemeshFileName = os.path.join(directory,'Basemeshes',basemeshRelativeFileName)
-        resultFileName = os.path.join(directory,'Results',scanRelativeFileName)
+        if not os.path.isabs(basemeshFileName):
+            basemeshFileName = os.path.join(basemeshesDirectory,basemeshShortName)
+            
+        resultFileName = os.path.join(resultsDirectory,scanShortName)
 
         if not os.path.exists(scanFileName):
             print "No such file: %s, ignoring" % scanFileName
@@ -30,17 +40,21 @@ def parseConfig(configFileName):
         if not os.path.exists(scanFileName):
             print "No such file: %s, ignoring" % basemesFileName
             continue
+        
         task = {
             'scanFileName': scanFileName,
             'basemeshFileName': basemeshFileName,
             'resultFileName': resultFileName,
+#            'scansDirectory': scansDirectory,
+#            'basemeshesDirectory': basemeshesDirectory,
+#            'resultsDirectory': resultsDirectory,
         }
 
         # search textures
         textureExtensions = [".jpg",".png"]
         for extension in textureExtensions:
-            textureFileName = os.path.join(directory,'Scans+Textures',os.path.splitext(scanRelativeFileName)[0]+extension)
-            resultTextureFileName = os.path.join(directory,'Results',os.path.splitext(scanRelativeFileName)[0]+extension)
+            textureFileName = os.path.join(scansDirectory,os.path.splitext(scanFileName)[0]+extension)
+            resultTextureFileName = os.path.join(resultsDirectory,os.path.splitext(scanFileName)[0]+extension)
 
             if os.path.exists(textureFileName):
                 task['textureFileName'] = textureFileName
@@ -48,19 +62,21 @@ def parseConfig(configFileName):
                 break
 
         # search config for optional args
-        argsFileName = os.path.join(directory,'Scans+Textures',os.path.splitext(scanRelativeFileName)[0] + '_args.txt')
+        argsFileName = os.path.join(scansDirectory,os.path.splitext(scanShortName)[0] + '_args.txt')
         if os.path.exists(argsFileName):
             task['useMethods'], task['methodsArgs'] = parseMethodsArgumentsConfig(argsFileName, getOptionalMethodsDescForParse())
         else:
             task['useMethods'], task['methodsArgs'] = collections.defaultdict(lambda: {}), collections.defaultdict(lambda: {})
+            
         # filenames of contol points                            
-        task['scanAlignPointsFileName'] = scanFileName + "_alignPoints.txt"
-        task['basemeshAlignPointsFileName'] = basemeshFileName + "_alignPoints.txt"
+        task['scanAlignPointsFileName'] = os.path.join(scansDirectory, scanShortName + "_alignPoints.txt")
+        task['basemeshAlignPointsFileName'] = os.path.join(basemeshesDirectory, basemeshShortName + "_alignPoints.txt")
 
-        task['scanWrapPointsFileName'] = scanFileName + "_wrapPoints.txt"
-        task['basemeshWrapPointsFileName'] = basemeshFileName + "_wrapPoints.txt"
+        task['scanWrapPointsFileName'] = os.path.join(scansDirectory, scanShortName + "_wrapPoints.txt")
+        task['basemeshWrapPointsFileName'] = os.path.join(basemeshesDirectory, basemeshShortName + "_wrapPoints.txt")
 
         tasks.append(task)
+        print task
 
     return tasks
 
