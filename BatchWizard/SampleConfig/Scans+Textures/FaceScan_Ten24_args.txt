@@ -1,6 +1,6 @@
 #Example of arguments config
 
-projectMesh= False
+#projectMesh= False
 
-rigidAlignment.matchScale = True
-nonRigidRegistration.maxIterations = 20
+#rigidAlignment.matchScale = True
+#nonRigidRegistration.maxIterations = 20
