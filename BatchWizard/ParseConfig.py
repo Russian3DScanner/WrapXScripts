@@ -55,11 +55,20 @@ def parseConfig(configFileName):
         for extension in textureExtensions:
             textureFileName = os.path.join(os.path.splitext(scanFileName)[0]+extension)
             resultTextureFileName = os.path.join(resultsDirectory,os.path.splitext(scanShortName)[0]+extension)
+            basemeshTextureFileName = os.path.join(os.path.splitext(basemeshFileName)[0]+extension)
+            
 
             if os.path.exists(textureFileName):
                 task['textureFileName'] = textureFileName
                 task['resultTextureFileName'] = resultTextureFileName
+            break
+        
+        for extension in textureExtensions:
+            if os.path.exists(basemeshTextureFileName):
+                task['basemeshTextureFileName'] = basemeshTextureFileName
                 break
+                
+            
 
         # search config for optional args
         argsFileName = os.path.join(scansDirectory,os.path.splitext(scanShortName)[0] + '_args.txt')

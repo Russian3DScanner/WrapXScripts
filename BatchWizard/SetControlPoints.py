@@ -30,6 +30,13 @@ for taskNum, task in enumerate(tasks):
     basemesh = wrap.Geom(task['basemeshFileName'])
     print "OK"
 
+    if 'basemeshTextureFileName' in task:
+        print "Loading basemesh texture %s" % task['basemeshTextureFileName']
+        basemesh.texture = wrap.Image(task['basemeshTextureFileName'])
+        print "OK"
+    else:
+        print "No basemesh texture found"
+
     # Rigid alignment
 
     basemeshAlignPoints = []
