@@ -5,11 +5,6 @@ import shutil
 # Set directory which will store configs and results
 outputDirectory = "ManyScansOneBasemesh"
 
-# Change to True of False to enable or disable some stages
-subdivide = True
-projectMesh = True
-transferTexture = True
-
 # Do not touch lines below
 scansDirectory = os.path.join(outputDirectory,"Scans+Textures")
 basemeshesDirectory = os.path.join(outputDirectory,"Basemeshes")
@@ -17,15 +12,15 @@ resultsDirectory = os.path.join(outputDirectory,"Results")
 
 for directory in [scansDirectory,basemeshesDirectory,resultsDirectory]:
     if not os.path.exists(directory):
-        print "Creating %s" % directory
-        os.makedirs(directory) 
-       
-        
+        print "Creating directory '%s'" % directory
+        os.makedirs(directory)
+
+
 print "Select scans..."
 scanFileNames = wrap.openFilesDialog("Select scans",filter="Files (*.obj)")
 if not scanFileNames:
     raise ValueError("Scan filename list cannot be empty")
-    
+
 for scanFileName in scanFileNames:
     print "\t", scanFileName
 
@@ -44,35 +39,22 @@ for scanFileName in scanFileNames:
 configFileName = os.path.join(outputDirectory,"Scans_Basemeshes.txt")
 with open(configFileName,"wb") as file:
     file.write(os.linesep.join(pairs))
-    
-print "Config written to %s" % os.path.abspath(configFileName)
+
+print "Config written to '%s'" % os.path.abspath(configFileName)
 
 # Generating args to skip stages if thy set to False
 sys.path.append(os.getcwd())
 import ParseConfig; reload(ParseConfig)
 tasks = ParseConfig.parseConfig(configFileName)
 
-argsTemplate = open("argsTemplate.txt","rb").read()
-argsTemplate = argsTemplate.replace("# subdivide = True", "subdivide = %s" % subdivide)
-argsTemplate = argsTemplate.replace("# projectMesh = True", "projectMesh = %s" % projectMesh)
-argsTemplate = argsTemplate.replace("# transferTexture = True", "transferTexture = %s" % transferTexture)
+argsTemplate = open(tasks[0]['defaultArgsFileName'],"rb").read()
 for task in tasks:
-    with open(task['argsFileName'],"wb") as file:
+    with open(task['customArgsFileName'],"wb") as file:
         file.write(argsTemplate)
     #print task['argsFileName']
 
 print
-print "Please run SetContolPoints.py and select it"
+print "Please run 'SetContolPoints.py' and select them"
 print
-
-
-
-
-
-    
-
-
-
-
 
 

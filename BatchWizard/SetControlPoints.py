@@ -7,7 +7,7 @@ import ParseConfig; reload(ParseConfig)
 
 print "Select config file"
 configFile = wrap.openFileDialog("Select config file",filter="Text Files (*.txt)")
-print "Config file is %s" %  configFile
+print "Config file is '%s'" %  configFile
 
 tasks = ParseConfig.parseConfig(configFile)
 
@@ -76,7 +76,9 @@ for taskNum, task in enumerate(tasks):
     # save
     wrap.savePoints(basemeshWrapPoints,task['basemeshWrapPointsFileName'])
     wrap.savePoints(scanWrapPoints,task['scanWrapPointsFileName'])
-    
+
     print
-    print "Wrapping point correspondences saved, please run DoWrapping.py. For watch aligned scanes run LineUp.py"
+    print "Wrapping point correspondences saved, please run 'DoWrapping.py'." 
+    print "For showing aligned scans run 'LineUp.py'."
     print
+

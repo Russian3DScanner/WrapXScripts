@@ -6,13 +6,13 @@ import ParseConfig; reload(ParseConfig)
 
 print "Select config file"
 configFile = wrap.openFileDialog("Select config file",filter="Text Files (*.txt)")
-print "Config file is %s" %  configFile
+print "Config file is '%s'" %  configFile
 
 tasks = ParseConfig.parseConfig(configFile)
 
 tasksCount = len(tasks)
 for taskNum, task in enumerate(tasks):
-    
+
     print "Task %d of %d" % (taskNum + 1, tasksCount)
     print "Loading scan %s..." % task['scanFileName']
     scan = wrap.Geom(task['scanFileName'])
@@ -29,7 +29,7 @@ for taskNum, task in enumerate(tasks):
     print "Loading basemesh %s..." % task['basemeshFileName']
     basemesh = wrap.Geom(task['basemeshFileName'])
     print "OK"
-    
+
     #if 'basemeshTextureFileName' in task:
     #    print "Loading basemesh texture %s" % task['basemeshTextureFileName']
     #    basemesh.texture = wrap.Image(task['basemeshTextureFileName'])
@@ -43,73 +43,73 @@ for taskNum, task in enumerate(tasks):
     transformMatrix = wrap.rigidAlignment(basemesh, basemeshAlignPoints, scan, scanAlignPoints, **task['methodsArgs']['rigidAlignment'])
     basemesh.transform(transformMatrix)
     wrap.fitToView()
-    print "OK"    
+    print "OK"
 
     print "Non-rigid registration..."
     basemeshWrapPoints = wrap.loadPoints(task['basemeshWrapPointsFileName'])
     scanWrapPoints = wrap.loadPoints(task['scanWrapPointsFileName'])
-    
-    minScanSize = min(scan.boundingBoxSize)    
-    minBaseSize = min(basemesh.boundingBoxSize)    
-        
+
+    minScanSize = min(scan.boundingBoxSize)
+    minBaseSize = min(basemesh.boundingBoxSize)
+
     if minBaseSize < 1.0 and minBaseSize < minScanSize:
         scaleDegree = 10.0/minBaseSize
     elif minScanSize < 1.0:
         scaleDegree = 10.0/minScanSize
     else:
-        scaleDegree = 1.0    
+        scaleDegree = 1.0
 
     if scaleDegree > 1.0:
         print "Scan is too small, temporarily increase scale to avoid rounding errors. Scale: %f" % scaleDegree
         scan.scale(scaleDegree)
         basemesh.scale(scaleDegree)
     scan.fitToView()
-    
+
     wrapped = wrap.nonRigidRegistration(basemesh,scan,basemeshWrapPoints,scanWrapPoints, **task['methodsArgs']['nonRigidRegistration'])
     basemesh.hide()
     print "OK"
-    
-    if 'subdivide' not in task['useMethods'] or task['useMethods']['subdivide']:
+
+    if task['useMethods']['subdivide']:
         print "Subdivision..."
         wrapped = wrap.subdivide(wrapped, **task['methodsArgs']['subdivide'])
         print "OK"
     else:
         print 'Skipping subdivide'
-    
-    if 'projectMesh' not in task['useMethods'] or task['useMethods']['projectMesh']:
+
+    if task['useMethods']['projectMesh']:
         print "Extracting details..."
         wrapped = wrap.projectMesh(wrapped, scan, **task['methodsArgs']['projectMesh'])
         print "OK"
     else:
         print 'Skipping projectMesh'
 
-    
+
     if scaleDegree > 1.0:
         print "Restoring original scan scale"
         wrapped.scale(1.0/scaleDegree)
         scan.scale(1.0/scaleDegree)
-    
+
     wrapped.fitToView()
-    
+
     print "Saving results..."
     if not os.path.exists(os.path.dirname(task['resultFileName'])):
-        try: os.mkdir(os.path.dirname(task['resultFileName'])) 
+        try: os.mkdir(os.path.dirname(task['resultFileName']))
         except: pass
-    
+
     wrapped.save(task['resultFileName'])
     print "Wrapped result saved to %s" % task['resultFileName']
-    
-    if scan.texture and ('transferTexture' not in task['useMethods'] or task['useMethods']['transferTexture']):
-        wrapped.texture = wrap.transferTexture(scan, scan.texture, wrapped)        
-        wrapped.texture.extrapolate()        
+
+    if scan.texture and task['useMethods']['transferTexture']:
+        wrapped.texture = wrap.transferTexture(scan, scan.texture, wrapped)
+        wrapped.texture.extrapolate()
         wrapped.texture.save(task['resultTextureFileName'])
         print "Wrapped result texture saved to %s" % task['resultTextureFileName']
     else:
         print "Skipping texture transfer"
-            
-        
+
     print
-    
-print    
+
+print
 print "Wrapping done, please use LineUp.py to see all results"
 print
+
