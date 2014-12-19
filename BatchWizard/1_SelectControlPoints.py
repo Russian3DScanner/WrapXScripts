@@ -92,11 +92,12 @@ for taskNum, task in enumerate(tasks):
         os.makedirs(scanPointsDir)
     wrap.savePoints(scanPoints,task['scanPointsFileName'])
     print "Point correspondences saved"
+    print
 
 
 
 print
-print "Point correspondences saved, please run '1_Wrapping.py'."
+print "Point correspondences saved, please run '2_Wrapping.py'."
 print "For showing aligned scans and basemeshes run 'ShowResults_1_SetControlPoints.py'."
 print
 

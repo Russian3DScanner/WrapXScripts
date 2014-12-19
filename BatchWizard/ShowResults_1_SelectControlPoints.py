@@ -6,8 +6,7 @@ import ParseConfig; reload(ParseConfig)
 
 
 print "Select config file"
-#configFile = wrap.openFileDialog("Select config file",filter="Text Files (*.txt)")
-configFile = '/home/ivan/WrapXScripts/BatchWizard/00_output/Config_Scans_Basemeshes.txt'
+configFile = wrap.openFileDialog("Select config file",filter="Text Files (*.txt)")
 print "Config file is '%s'" %  configFile
 
 tasks = ParseConfig.parseConfig(configFile)
