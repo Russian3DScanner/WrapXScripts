@@ -1,10 +1,10 @@
 import sys, os
 import collections
 
-def parseConfig(configFileName):
+def parseConfig(configFileName, defaultSettingsFileName = None):
 
-    if os.path.basename(configFileName) == "defaultArgs.txt":
-        raise Exception("'%s' is not config file" % os.path.basename(configFileName))
+    #if os.path.basename(configFileName) == "defaultSettings.txt":
+    #    raise Exception("'%s' is not config file" % os.path.basename(configFileName))
 
 
     directory = os.path.dirname(configFileName)
@@ -76,16 +76,17 @@ def parseConfig(configFileName):
                 task['basemeshTextureFileName'] = basemeshTextureFileName
                 break
 
-        # search config for optional args
-        task['defaultArgsFileName'] = "defaultArgs.txt"
-        task['customArgsFileName'] = os.path.join(scansDirectory,os.path.splitext(scanShortName)[0] + '_args.txt')
+        if defaultSettingsFileName:
+            # search config for optional args
+            task['defaultSettingsFileName'] = defaultSettingsFileName
+            task['customSettingsFileName'] = os.path.join(scansDirectory,os.path.splitext(scanShortName)[0] + '_args.txt')
 
-        if os.path.exists(task['customArgsFileName']):
-            task['usedArgsFileName'] = task['customArgsFileName']
-        else:
-            task['usedArgsFileName'] = task['defaultArgsFileName']
+            if os.path.exists(task['customSettingsFileName']):
+                task['usedSettingsFileName'] = task['customSettingsFileName']
+            else:
+                task['usedSettingsFileName'] = task['defaultSettingsFileName']
 
-        task['useMethods'], task['methodsArgs'] = parseMethodsArgumentsConfig(task['usedArgsFileName'], getOptionalMethodsDescForParse())
+            task['useMethods'], task['methodsSettings'] = parseMethodsArgumentsConfig(task['usedSettingsFileName'], getOptionalMethodsDescForParse())
 
 
         # filenames of contol points                            
@@ -144,7 +145,7 @@ def getOptionalMethodsDescForParse():
 
 def parseMethodsArgumentsConfig(fileName, methodsDescription):
     useMethods = {}
-    methodsArgs = collections.defaultdict(lambda: {})
+    methodsSettings = collections.defaultdict(lambda: {})
 
     with open(fileName) as configFile:
         for line in configFile:
@@ -163,7 +164,7 @@ def parseMethodsArgumentsConfig(fileName, methodsDescription):
                 arg = parsedArgName[1]
                 if arg not in methodsDescription[methodName]:
                     raise Exception("Bad arg name %s " % arg)
-                methodsArgs[methodName][arg] = methodsDescription[methodName][arg](argumentValue)
+                methodsSettings[methodName][arg] = methodsDescription[methodName][arg](argumentValue)
 
-    return useMethods, methodsArgs
+    return useMethods, methodsSettings
 

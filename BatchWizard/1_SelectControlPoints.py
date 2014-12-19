@@ -20,8 +20,11 @@ for taskNum, task in enumerate(tasks):
 
     print "Task %d of %d" % (taskNum + 1, len(tasks))
     print "Loading scan '%s'..." % task['scanFileName']
-    scan = wrap.Geom(task['scanFileName'], scaleFactor = 1000)
+    scan = wrap.Geom(task['scanFileName'], fitToView = False)
     scan.wireframe = False
+    scaleFactor = 100.0 / scan.boundingBoxSize[0]
+    scan.scale(scaleFactor)
+    wrap.fitToView()
     print "OK"
 
     if 'textureFileName' in task:
@@ -32,7 +35,7 @@ for taskNum, task in enumerate(tasks):
         print "No texture found"
 
     print "Loading basemesh '%s'..." % task['basemeshFileName']
-    basemesh = wrap.Geom(task['basemeshFileName'])
+    basemesh = wrap.Geom(task['basemeshFileName'],fitToView = False)
     print "OK"
 
     if 'basemeshTextureFileName' in task:
@@ -51,9 +54,7 @@ for taskNum, task in enumerate(tasks):
     if os.path.exists(task['scanPointsFileName']):
         scanPoints = wrap.loadPoints(task['scanPointsFileName'])
 
-
     accepted = False
-    basemesh.hide()
 
     while not accepted:
         print
@@ -61,8 +62,9 @@ for taskNum, task in enumerate(tasks):
         (basemeshPoints, scanPoints) = wrap.selectPoints(basemesh, scan, basemeshPoints, scanPoints)
         print "OK"
 
-        transformMatrix = wrap.rigidAlignment(basemesh, basemeshPoints, scan, scanPoints, **task['methodsArgs']['rigidAlignment'])
+        transformMatrix = wrap.rigidAlignment(basemesh, basemeshPoints, scan, scanPoints, matchScale = True)
         transformedBasemesh = basemesh.copy()
+        basemesh.hide()
         transformedBasemesh.transform(transformMatrix)
         wrap.fitToView()
         print "Is rigid alignment OK?"
@@ -94,7 +96,7 @@ for taskNum, task in enumerate(tasks):
 
 
 print
-print "Point correspondences saved, please run 'DoWrapping.py'."
-print "For showing aligned scans and basemeshes run 'ShowResults.py'."
+print "Point correspondences saved, please run '1_Wrapping.py'."
+print "For showing aligned scans and basemeshes run 'ShowResults_1_SetControlPoints.py'."
 print
 

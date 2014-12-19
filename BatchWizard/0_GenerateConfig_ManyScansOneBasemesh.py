@@ -58,7 +58,8 @@ with open(configFileName,"wb") as file:
 
 print
 print "Config written to '%s'" % os.path.abspath(configFileName)
-print "Please run 'SelectContolPoints.py'"
+print 
+print "Please run '1_SelectContolPoints.py'"
 print
 
 
