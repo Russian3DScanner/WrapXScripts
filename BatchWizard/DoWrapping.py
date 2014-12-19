@@ -14,19 +14,19 @@ tasksCount = len(tasks)
 for taskNum, task in enumerate(tasks):
 
     print "Task %d of %d" % (taskNum + 1, tasksCount)
-    print "Loading scan %s..." % task['scanFileName']
+    print "Loading scan '%s'..." % task['scanFileName']
     scan = wrap.Geom(task['scanFileName'])
     scan.wireframe = False
     print "OK"
 
     if 'textureFileName' in task:
-        print "Loading texture %s" % task['textureFileName']
+        print "Loading texture '%s'" % task['textureFileName']
         scan.texture = wrap.Image(task['textureFileName'])
         print "OK"
     else:
         print "No texture found"
 
-    print "Loading basemesh %s..." % task['basemeshFileName']
+    print "Loading basemesh '%s'..." % task['basemeshFileName']
     basemesh = wrap.Geom(task['basemeshFileName'])
     print "OK"
 
@@ -38,17 +38,14 @@ for taskNum, task in enumerate(tasks):
     #    print "No basemesh texture found"    
 
     print "Rigid alignment..."
-    basemeshAlignPoints = wrap.loadPoints(task['basemeshAlignPointsFileName'])
-    scanAlignPoints = wrap.loadPoints(task['scanAlignPointsFileName'])
-    transformMatrix = wrap.rigidAlignment(basemesh, basemeshAlignPoints, scan, scanAlignPoints, **task['methodsArgs']['rigidAlignment'])
+    basemeshPoints = wrap.loadPoints(task['basemeshPointsFileName'])
+    scanPoints = wrap.loadPoints(task['scanPointsFileName'])
+    transformMatrix = wrap.rigidAlignment(basemesh, basemeshPoints, scan, scanPoints, **task['methodsArgs']['rigidAlignment'])
     basemesh.transform(transformMatrix)
     wrap.fitToView()
     print "OK"
 
     print "Non-rigid registration..."
-    basemeshWrapPoints = wrap.loadPoints(task['basemeshWrapPointsFileName'])
-    scanWrapPoints = wrap.loadPoints(task['scanWrapPointsFileName'])
-
     minScanSize = min(scan.boundingBoxSize)
     minBaseSize = min(basemesh.boundingBoxSize)
 
@@ -65,24 +62,9 @@ for taskNum, task in enumerate(tasks):
         basemesh.scale(scaleDegree)
     scan.fitToView()
 
-    wrapped = wrap.nonRigidRegistration(basemesh,scan,basemeshWrapPoints,scanWrapPoints, **task['methodsArgs']['nonRigidRegistration'])
+    wrapped = wrap.nonRigidRegistration(basemesh,scan,basemeshPoints,scanPoints, **task['methodsArgs']['nonRigidRegistration'])
     basemesh.hide()
     print "OK"
-
-    if task['useMethods']['subdivide']:
-        print "Subdivision..."
-        wrapped = wrap.subdivide(wrapped, **task['methodsArgs']['subdivide'])
-        print "OK"
-    else:
-        print 'Skipping subdivide'
-
-    if task['useMethods']['projectMesh']:
-        print "Extracting details..."
-        wrapped = wrap.projectMesh(wrapped, scan, **task['methodsArgs']['projectMesh'])
-        print "OK"
-    else:
-        print 'Skipping projectMesh'
-
 
     if scaleDegree > 1.0:
         print "Restoring original scan scale"
@@ -92,24 +74,15 @@ for taskNum, task in enumerate(tasks):
     wrapped.fitToView()
 
     print "Saving results..."
-    if not os.path.exists(os.path.dirname(task['resultFileName'])):
-        try: os.mkdir(os.path.dirname(task['resultFileName']))
+    if not os.path.exists(os.path.dirname(task['wrappedResultFileName'])):
+        try: os.mkdir(os.path.dirname(task['wrappedResultFileName']))
         except: pass
 
-    wrapped.save(task['resultFileName'])
-    print "Wrapped result saved to %s" % task['resultFileName']
-
-    if scan.texture and task['useMethods']['transferTexture']:
-        wrapped.texture = wrap.transferTexture(scan, scan.texture, wrapped)
-        wrapped.texture.extrapolate()
-        wrapped.texture.save(task['resultTextureFileName'])
-        print "Wrapped result texture saved to %s" % task['resultTextureFileName']
-    else:
-        print "Skipping texture transfer"
-
-    print
+    wrapped.save(task['wrappedResultFileName'])
+    print "Wrapped result saved to '%s'" % task['wrappedResultFileName']
 
 print
-print "Wrapping done, please use LineUp.py to see all results"
+print "Wrapping done, please use 'doPostProcessing.py' to make post processing"
+print "or 'ShowResults.py' to see all results"
 print
 

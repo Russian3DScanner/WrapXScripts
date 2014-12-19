@@ -18,12 +18,25 @@ postprocResults = []
 xdiff = 0
 
 tasksCount = len(tasks)
-for taskNum, task in enumerate(tasks):
+taskNum = 0
+#for taskNum, task in enumerate(tasks):
+
+print "All objects here in the viewport are rigidly aligned and scaled to be the same width."
+print "From bottom:"
+print "1st row (lower) - scans"
+print "2nd row - basemeshes"
+print "3rd row - wrapped basemeshes (if exist)"
+print "4th row (top) - postprocessed wrapped basemeshes (if exist)"
+
+while True:
+
+    task = tasks[taskNum]
+
     print "Task %d of %d" % (taskNum + 1, tasksCount)
     print "Loading scan '%s'..." % task['scanFileName']
     scan = wrap.Geom(task['scanFileName'])
     wrap.fitToView()
-    scans.append(scan)
+    #scans.append(scan)
     scan.wireframe = False
     print "OK"
 
@@ -37,7 +50,7 @@ for taskNum, task in enumerate(tasks):
     print "Loading basemesh '%s'..." % task['basemeshFileName']
     basemesh = wrap.Geom(task['basemeshFileName'])
     wrap.fitToView()
-    basemeshes.append(basemesh)
+    #basemeshes.append(basemesh)
     print "OK"
 
     if 'basemeshTextureFileName' in task:
@@ -63,42 +76,57 @@ for taskNum, task in enumerate(tasks):
 
     if os.path.exists(task['wrappedResultFileName']):
         print "Loading wrapped basemesh '%s'..." % task['wrappedResultFileName']
-        result = wrap.Geom(task['wrappedResultFileName'])
+        wrappedResult = wrap.Geom(task['wrappedResultFileName'])
         wrap.fitToView()
-        wrappedResults.append(result)
+        #wrappedResults.append(result)
         print "OK"
 
-        result.scale(scaleFactor)
-        result.translate(xdiff,basemesh.boundingBoxSize[1]*2,0)
+        wrappedResult.scale(scaleFactor)
+        wrappedResult.translate(xdiff,basemesh.boundingBoxSize[1]*2,0)
 
 
     if os.path.exists(task['postprocResultFileName']):
         print "Loading wrapped basemesh '%s'..." % task['postprocResultFileName']
-        result = wrap.Geom(task['postprocResultFileName'])
+        postprocResult = wrap.Geom(task['postprocResultFileName'])
         wrap.fitToView()
-        postprocResults.append(result)
+        #postprocResults.append(result)
         print "OK"
 
         if 'postprocResultTextureFileName' in task and os.path.exists(task['postprocResultTextureFileName']):
             print "Loading texture '%s'" % task['postprocResultTextureFileName']
-            result.texture = wrap.Image(task['postprocResultTextureFileName'])
+            postprocResult.texture = wrap.Image(task['postprocResultTextureFileName'])
             print "OK"
         else:
             print "No result texture found"
 
-        result.scale(scaleFactor)
-        result.translate(xdiff,basemesh.boundingBoxSize[1]*3,0)
+        postprocResult.scale(scaleFactor)
+        postprocResult.translate(xdiff,basemesh.boundingBoxSize[1]*3,0)
 
 
     xdiff += scan.boundingBoxSize[0]
 
     wrap.fitToView()
-    print
 
-print "All objects here in the viewport are rigidly aligned and scaled to be the same width."
-print "From bottom:"
-print "1st row (lower) - scans"
-print "2nd row - basemeshes"
-print "3rd row - wrapped basemeshes (if exist)"
-print "4th row (top) - postprocessed wrapped basemeshes (if exist)"
+    title = "scan %d/%d    %s" % (taskNum+1, len(tasks), os.path.basename(task['scanFileName']))
+    buttons = ["Stop"]
+    if taskNum != (len(tasks)-1):
+        buttons.insert(0,"Next ->")
+    if taskNum > 0:
+        buttons.insert(0,"<- Prev")
+    ans = wrap.customDialog(title, buttons)
+
+    if ans == "Stop":
+        print "Stopped"
+        break
+    elif ans == "<- Prev":
+        taskNum -= 1
+    elif ans == "Next ->":
+        taskNum += 1
+
+    del scan
+    del basemesh
+    if 'wrappedResult' in locals(): del wrappedResult
+    if 'postprocResult' in locals(): del postprocResult
+
+
 

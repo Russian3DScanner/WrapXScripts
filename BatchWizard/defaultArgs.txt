@@ -34,12 +34,12 @@ nonRigidRegistration.subdivisionPercentage = 1.0
 
 
 # Disable or enable subdivide stage in DoWrapping.py
-subdivide = False
+subdivide = True
 subdivide.nSubdivisions = 1
 
 
 # Disable or enable projectMesh stage in DoWrapping.py
-projectMesh = False
+projectMesh = True
 projectMesh.maxRelativeDist = 1.0
 projectMesh.checkNormalsCompatibility = True
 

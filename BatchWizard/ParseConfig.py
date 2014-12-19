@@ -10,7 +10,8 @@ def parseConfig(configFileName):
     directory = os.path.dirname(configFileName)
     scansDirectory = os.path.join(directory,"Scans+Textures")
     basemeshesDirectory = os.path.join(directory,"Basemeshes")
-    resultsDirectory = os.path.join(directory,"Results")
+    wrappedResultsDirectory = os.path.join(directory,"Results_Wrapped")
+    postprocResultsDirectory = os.path.join(directory,"Results_PostProcessed")
 
 
     tasks = []
@@ -35,7 +36,8 @@ def parseConfig(configFileName):
         if not os.path.isabs(basemeshFileName):
             basemeshFileName = os.path.join(basemeshesDirectory,basemeshShortName)
 
-        resultFileName = os.path.join(resultsDirectory,scanShortName)
+        wrappedResultFileName = os.path.join(wrappedResultsDirectory,scanShortName)
+        postprocResultFileName = os.path.join(postprocResultsDirectory,scanShortName)
 
         if not os.path.exists(scanFileName):
             print "No such file: %s, ignoring" % scanFileName
@@ -48,7 +50,8 @@ def parseConfig(configFileName):
         task = {
             'scanFileName': scanFileName,
             'basemeshFileName': basemeshFileName,
-            'resultFileName': resultFileName,
+            'wrappedResultFileName': wrappedResultFileName,
+            'postprocResultFileName': postprocResultFileName,
 #            'scansDirectory': scansDirectory,
 #            'basemeshesDirectory': basemeshesDirectory,
 #            'resultsDirectory': resultsDirectory,
@@ -59,11 +62,11 @@ def parseConfig(configFileName):
 
         for extension in textureExtensions:
             textureFileName = os.path.join(os.path.splitext(scanFileName)[0]+extension)
-            resultTextureFileName = os.path.join(resultsDirectory,os.path.splitext(scanShortName)[0]+extension)
+            postprocResultTextureFileName = os.path.join(postprocResultsDirectory,os.path.splitext(scanShortName)[0]+extension)
 
             if os.path.exists(textureFileName):
                 task['textureFileName'] = textureFileName
-                task['resultTextureFileName'] = resultTextureFileName
+                task['postprocResultTextureFileName'] = postprocResultTextureFileName
                 break
 
         for extension in textureExtensions:
@@ -86,11 +89,8 @@ def parseConfig(configFileName):
 
 
         # filenames of contol points                            
-        task['scanAlignPointsFileName'] = os.path.join(scansDirectory, scanShortName + "_alignPoints.txt")
-        task['basemeshAlignPointsFileName'] = os.path.join(basemeshesDirectory, basemeshShortName + "_alignPoints.txt")
-
-        task['scanWrapPointsFileName'] = os.path.join(scansDirectory, scanShortName + "_wrapPoints.txt")
-        task['basemeshWrapPointsFileName'] = os.path.join(basemeshesDirectory, basemeshShortName + "_wrapPoints.txt")
+        task['scanPointsFileName'] = os.path.join(scansDirectory, scanShortName + "_Points.txt")
+        task['basemeshPointsFileName'] = os.path.join(basemeshesDirectory, basemeshShortName + "_Points.txt")
 
         tasks.append(task)
         #import pprint

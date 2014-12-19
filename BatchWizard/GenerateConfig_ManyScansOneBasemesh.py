@@ -3,16 +3,19 @@ import sys,os
 import shutil
 
 # Set directory which will store configs and results
-outputDirectory = "ManyScansOneBasemesh"
+print "Select output directory..."
+outputDirectory = wrap.openDirectoryDialog("Select output directory...")
+print "Output directory is '%s'" % outputDirectory
 
-# Do not touch lines below
+
 scansDirectory = os.path.join(outputDirectory,"Scans+Textures")
 basemeshesDirectory = os.path.join(outputDirectory,"Basemeshes")
-resultsDirectory = os.path.join(outputDirectory,"Results")
+wrappedResultsDirectory = os.path.join(outputDirectory,"Results_Wrapped")
+postprocResultsDirectory = os.path.join(outputDirectory,"Results_PostProcessed")
 
-for directory in [scansDirectory,basemeshesDirectory,resultsDirectory]:
+for directory in [scansDirectory,basemeshesDirectory,wrappedResultsDirectory,postprocResultsDirectory]:
     if not os.path.exists(directory):
-        print "Creating directory '%s'" % directory
+        #print "Creating directory '%s'" % directory
         os.makedirs(directory)
 
 
@@ -36,25 +39,26 @@ pairs = []
 for scanFileName in scanFileNames:
     pairs.append("%s\t%s" % (scanFileName, basemeshFileName))
 
-configFileName = os.path.join(outputDirectory,"Scans_Basemeshes.txt")
+configFileName = os.path.join(outputDirectory,"Config_Scans_Basemeshes.txt")
 with open(configFileName,"wb") as file:
     file.write(os.linesep.join(pairs))
 
-print "Config written to '%s'" % os.path.abspath(configFileName)
+
 
 # Generating args to skip stages if thy set to False
-sys.path.append(os.getcwd())
-import ParseConfig; reload(ParseConfig)
-tasks = ParseConfig.parseConfig(configFileName)
+#sys.path.append(os.getcwd())
+#import ParseConfig; reload(ParseConfig)
+#tasks = ParseConfig.parseConfig(configFileName)
 
-argsTemplate = open(tasks[0]['defaultArgsFileName'],"rb").read()
-for task in tasks:
-    with open(task['customArgsFileName'],"wb") as file:
-        file.write(argsTemplate)
-    #print task['argsFileName']
+#argsTemplate = open(tasks[0]['defaultArgsFileName'],"rb").read()
+#for task in tasks:
+#    with open(task['customArgsFileName'],"wb") as file:
+#        file.write(argsTemplate)
+#    #print task['argsFileName']
 
 print
-print "Please run 'SetContolPoints.py' and select them"
+print "Config written to '%s'" % os.path.abspath(configFileName)
+print "Please run 'SelectContolPoints.py'"
 print
 
 
