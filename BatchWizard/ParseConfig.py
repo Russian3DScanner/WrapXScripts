@@ -8,8 +8,7 @@ def parseConfig(configFileName, defaultSettingsFileName = None):
 
 
     directory = os.path.dirname(configFileName)
-    scansDirectory = os.path.join(directory,"Scans+Textures")
-    basemeshesDirectory = os.path.join(directory,"Basemeshes")
+    tmpDirectory = os.path.join(directory,"Temp")
     wrappedResultsDirectory = os.path.join(directory,"Results_Wrapped")
     postprocResultsDirectory = os.path.join(directory,"Results_PostProcessed")
 
@@ -31,13 +30,15 @@ def parseConfig(configFileName, defaultSettingsFileName = None):
         basemeshShortName = os.path.split(basemeshFileName)[1]
 
         if not os.path.isabs(scanFileName):
-            scanFileName = os.path.join(scansDirectory,scanShortName)
+            scanFileName = os.path.join(tmpDirectory,scanShortName)
 
         if not os.path.isabs(basemeshFileName):
-            basemeshFileName = os.path.join(basemeshesDirectory,basemeshShortName)
+            basemeshFileName = os.path.join(tmpDirectory,basemeshShortName)
 
         wrappedResultFileName = os.path.join(wrappedResultsDirectory,scanShortName)
         postprocResultFileName = os.path.join(postprocResultsDirectory,scanShortName)
+
+        freePolygonsFileName = os.path.join(tmpDirectory,os.path.splitext(basemeshShortName)[0] + '_FreePolygons.txt')
 
         if not os.path.exists(scanFileName):
             print "No such file: %s, ignoring" % scanFileName
@@ -52,9 +53,7 @@ def parseConfig(configFileName, defaultSettingsFileName = None):
             'basemeshFileName': basemeshFileName,
             'wrappedResultFileName': wrappedResultFileName,
             'postprocResultFileName': postprocResultFileName,
-#            'scansDirectory': scansDirectory,
-#            'basemeshesDirectory': basemeshesDirectory,
-#            'resultsDirectory': resultsDirectory,
+            'freePolygonsFileName': freePolygonsFileName
         }
 
         # search textures
@@ -79,7 +78,7 @@ def parseConfig(configFileName, defaultSettingsFileName = None):
         if defaultSettingsFileName:
             # search config for optional args
             task['defaultSettingsFileName'] = defaultSettingsFileName
-            task['customSettingsFileName'] = os.path.join(scansDirectory,os.path.splitext(scanShortName)[0] + '_args.txt')
+            task['customSettingsFileName'] = os.path.join(tmpDirectory,os.path.splitext(scanShortName)[0] + '_args.txt')
 
             if os.path.exists(task['customSettingsFileName']):
                 task['usedSettingsFileName'] = task['customSettingsFileName']
@@ -90,8 +89,8 @@ def parseConfig(configFileName, defaultSettingsFileName = None):
 
 
         # filenames of contol points                            
-        task['scanPointsFileName'] = os.path.join(scansDirectory, scanShortName + "_Points.txt")
-        task['basemeshPointsFileName'] = os.path.join(basemeshesDirectory, basemeshShortName + "_Points.txt")
+        task['scanPointsFileName'] = os.path.join(tmpDirectory, scanShortName + "_Points.txt")
+        task['basemeshPointsFileName'] = os.path.join(tmpDirectory, basemeshShortName + "_Points.txt")
 
         tasks.append(task)
         #import pprint

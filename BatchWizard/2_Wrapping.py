@@ -42,8 +42,16 @@ for taskNum, task in enumerate(tasks):
     print "OK"
 
     print "Non-rigid registration..."
+    freePolygons = []
+    if os.path.exists(task['freePolygonsFileName']):
+        print "Using free polygons from %s", task['freePolygonsFileName']
+        freePolygons = wrap.loadPolygons(task['freePolygonsFileName'])
+    else:
+        print "No free polygons"
+    
+    
     start = datetime.datetime.now()
-    wrapped = wrap.nonRigidRegistration(basemesh,scan,basemeshPoints,scanPoints, **task['methodsSettings']['nonRigidRegistration'])
+    wrapped = wrap.nonRigidRegistration(basemesh,scan,basemeshPoints,scanPoints,freePolygons, **task['methodsSettings']['nonRigidRegistration'])
     end = datetime.datetime.now()
     print "OK, took ", (end-start).total_seconds(), " seconds"
     del basemesh
@@ -59,6 +67,6 @@ for taskNum, task in enumerate(tasks):
 
 print
 print "Wrapping done, please use '3_PostProcessing.py' to make post processing"
-print "or 'ShowResults_2_Wrapping.py' to see results"
+print "or 'ShowResults_2_Wrapping.py' to see all results"
 print
 

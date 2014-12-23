@@ -16,12 +16,12 @@
 # stageName = False # True for enable, False to disable
 
 # Disable or enable subdivide stage in DoWrapping.py
-subdivide = True
+subdivide = False
 subdivide.nSubdivisions = 1
 
 
 # Disable or enable projectMesh stage in DoWrapping.py
-projectMesh = True
+projectMesh = False
 projectMesh.maxRelativeDist = 1.0
 projectMesh.checkNormalsCompatibility = True
 

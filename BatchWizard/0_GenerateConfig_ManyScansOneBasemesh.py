@@ -8,12 +8,11 @@ outputDirectory = wrap.openDirectoryDialog("Select output directory...")
 print "Output directory is '%s'" % outputDirectory
 
 
-scansDirectory = os.path.join(outputDirectory,"Scans+Textures")
-basemeshesDirectory = os.path.join(outputDirectory,"Basemeshes")
+tmpDirectory = os.path.join(outputDirectory,"Temp")
 wrappedResultsDirectory = os.path.join(outputDirectory,"Results_Wrapped")
 postprocResultsDirectory = os.path.join(outputDirectory,"Results_PostProcessed")
 
-for directory in [scansDirectory,basemeshesDirectory,wrappedResultsDirectory,postprocResultsDirectory]:
+for directory in [tmpDirectory,wrappedResultsDirectory,postprocResultsDirectory]:
     if not os.path.exists(directory):
         #print "Creating directory '%s'" % directory
         os.makedirs(directory)
@@ -58,7 +57,7 @@ with open(configFileName,"wb") as file:
 
 print
 print "Config written to '%s'" % os.path.abspath(configFileName)
-print 
+print
 print "Please run '1_SelectContolPoints.py'"
 print
 

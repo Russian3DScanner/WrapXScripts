@@ -69,6 +69,6 @@ for taskNum, task in enumerate(tasks):
     print
 
 print
-print "Post processing done, please use 'ShowResults_3_PostProcessing.py' to see results"
+print "Post processing done, please use 'ShowResults_3_PostProcessing.py' to see all results"
 print
 

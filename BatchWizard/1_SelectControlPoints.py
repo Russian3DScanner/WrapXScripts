@@ -73,7 +73,7 @@ for taskNum, task in enumerate(tasks):
         if accepted:
             print "Yes"
         else:
-            print "Rigid alignment not accepted, let's repeat point selection."
+            print "No, let's repeat point selection."
 
 
     basemesh = transformedBasemesh
@@ -95,9 +95,23 @@ for taskNum, task in enumerate(tasks):
     print
 
 
+    # free polygons
+    freePolygons = []
+    if os.path.exists(task['freePolygonsFileName']):
+        freePolygons = wrap.loadPolygons(task['freePolygonsFileName'])
+
+    print "Select free polygons..."
+    freePolygons = wrap.selectPolygons(basemesh, freePolygons)
+    if freePolygons:
+        print "OK"
+        wrap.savePolygons(freePolygons,task['freePolygonsFileName'])
+        print "Free polygons saved to '%s'" % task['freePolygonsFileName']
+    else:
+        print "No free polygons set"
+
 
 print
-print "Point correspondences saved, please run '2_Wrapping.py'."
+print "Please run '2_Wrapping.py'."
 print "For showing aligned scans and basemeshes run 'ShowResults_1_SetControlPoints.py'."
 print
 
