@@ -1,5 +1,6 @@
 import sys, os
 import collections
+import shlex
 
 def parseConfig(configFileName, defaultSettingsFileName = None):
 
@@ -25,7 +26,11 @@ def parseConfig(configFileName, defaultSettingsFileName = None):
         if line.startswith('#'):
             continue
 
-        (scanFileName, basemeshFileName) = line.split()
+        try:
+            (scanFileName, basemeshFileName) = shlex.split(line)
+        except:
+            raise Exception("Cannot parse line '%s' of file '%s', maybe you selected wrong filename?" % (line,os.path.basename(configFileName)))
+
         scanShortName = os.path.split(scanFileName)[1]
         basemeshShortName = os.path.split(basemeshFileName)[1]
 
@@ -98,7 +103,7 @@ def parseConfig(configFileName, defaultSettingsFileName = None):
 
 
     if not tasks:
-        raise Exception("'%s' contatins no tasks, maybe you selected wrong filename?" % os.path.filename(configFileName))
+        raise Exception("'%s' contatins no tasks, maybe you selected wrong filename?" % os.path.basename(configFileName))
 
     return tasks
 

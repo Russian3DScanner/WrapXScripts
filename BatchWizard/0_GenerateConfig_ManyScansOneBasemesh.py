@@ -1,6 +1,7 @@
 import wrap
 import sys,os
 import shutil
+import subprocess
 
 # Set directory which will store configs and results
 print "Select output directory..."
@@ -36,7 +37,7 @@ print "\t", basemeshFileName
 # Generating config
 pairs = []
 for scanFileName in scanFileNames:
-    pairs.append("%s\t%s" % (scanFileName, basemeshFileName))
+    pairs.append(subprocess.list2cmdline([scanFileName,basemeshFileName]))
 
 configFileName = os.path.join(outputDirectory,"Config_Scans_Basemeshes.txt")
 with open(configFileName,"wb") as file:
